@@ -13,6 +13,7 @@
 ** Usage
 
    Use this as a base image in your own =Dockerfile= or run as-is.
+
    Remember =logstash-forwarder= [[https://github.com/elastic/logstash-forwarder#important-tlsssl-certificate-notes][needs a certificate]].
 
 *** Dockerfile
