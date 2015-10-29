@@ -1,0 +1,46 @@
+#+TITLE: jeroentbt/logstash-forwarder
+#+AUTHOR: Jeroen Tiebout <jeroen@tinktenk.be>
+
+* Docker logstash-forwarder base image
+
+  Basically debian:jessie with [[https://github.com/elastic/logstash-forwarder][logstash-forwarder]] (and [[http://golang.org][Go]] to build the latter).
+
+** Versions
+
+   - Go :: 1.5.1 (64bit)
+   - logstash-forwarder :: 0.4.0
+
+** Usage
+
+   Use this as a base image in your own =Dockerfile= or run as-is.
+   Remember =logstash-forwarder= [[https://github.com/elastic/logstash-forwarder#important-tlsssl-certificate-notes][needs a certificate]].
+
+*** Dockerfile
+
+    Here is an example of how I use it as a base for building a configured image:
+
+    #+BEGIN_EXAMPLE dockerfile
+ FROM jeroentbt/logstash-forwarder:latest
+
+ MAINTAINER Jeroen Tiebout <jeroen@tinktenk.be>
+
+ ADD ["certs", "/etc/certs/"]
+ ADD ["config", "/etc/logstash-forwarder/"]
+
+ # Set workdir to dir in persistent storage. Your .logstash-forwarder statefile
+ # will be kept here
+ WORKDIR /logs
+ CMD [ "logstash-forwarder", "-config", "/etc/logstash-forwarder/" ]
+    #+END_EXAMPLE
+
+*** docker run
+
+    Or go manual:
+
+    #+BEGIN_EXAMPLE sh
+docker run -it \
+  -v "{$PWD}/certs":/etc/certs \
+  -v "{$PWD}/config":/etc/logstash-forwarder \
+  jeroentbt/logstash-forwarder:latest \
+  cd /logs && logstash-forwarder -config /etc/logstash-forwarder/
+    #+END_EXAMPLE
